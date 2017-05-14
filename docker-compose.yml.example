@@ -1,0 +1,7 @@
+version: '2'
+services:
+  backman:
+    build: .
+    environment:
+      PYTHONUNBUFFERED: 0
+      TOKEN: '<YOUR DISCORD BOT TOKEN HERE>'
