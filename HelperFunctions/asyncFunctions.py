@@ -23,17 +23,17 @@ async def play_opus_audio_to_channel_then_leave(message, opus_filename,\
     with no arguements. Most errors will be raised afterward.
 
     """
-
+    channel = message.author.voice.channel
     if(opus.is_loaded() and isinstance(message.author, discord.Member)\
-       and message.author.voice.voice_channel != None):
+       and channel != None):
         print(opus_filename)
         #Move to the correct voice channel
-        if(back_bot.is_voice_connected(message.author.server)):
-            voice_client = back_bot.voice_client_in(message.author.server)
-            await voice_client.disconnect()
-        try:
-            voice_client = await back_bot.join_voice_channel(message.author.voice.voice_channel)
 
+        # if(back_bot.is_voice_connected(message.author.server)):
+        #     voice_client = back_bot.voice_client_in(message.author.server)
+        #     await voice_client.disconnect()
+        try:
+            voice_client = await channel.connect()
             def disconnect_from_vc(*args):
                 dc_fut = asyncio.run_coroutine_threadsafe(voice_client.disconnect(), back_bot.loop)
                 try:
@@ -44,9 +44,8 @@ async def play_opus_audio_to_channel_then_leave(message, opus_filename,\
             #Play the audio, then disconnect
             try:
 
-                player = voice_client.create_ffmpeg_player(opus_filename, after = disconnect_from_vc)
+                voice_client.play(discord.FFmpegPCMAudio(opus_filename), after = disconnect_from_vc)
 
-                player.start()
 
             except Exception as e:
                 print("Back out! Couldn't play the audio!", e)
@@ -66,7 +65,7 @@ async def play_opus_audio_to_channel_then_leave(message, opus_filename,\
         head, clip  = split(opus_filename)
         base, rarity = split(head)
         em = back_embed(clip, rarity, rarity_colors, back_bot, message.author.name)
-        await back_bot.send_message(message.channel, embed=em)
+        await message.channel.send(embed=em)
         if(give_loot):
             back_bot.lootTracker(message.author, rarity, clip)
 

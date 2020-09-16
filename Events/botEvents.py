@@ -23,13 +23,10 @@ async def on_message(message):
     print(message.author.name, message.author.id)
     if(len(message.content)>0 and message.content[:len(CMD_PREFIX)] == CMD_PREFIX):
         pass
-    elif(has_a_back(message.content)\
-         and (message.author.id != BACK_BOT.user.id)\
-         and BACK_BOT.voice_client_in(message.server) == None):
-
+    elif(has_a_back(message.content) and (message.author.id != BACK_BOT.user.id)):
         print("back found! " + message.author.name + " is back at " + time.asctime())
         async def say_back_message():
-            await BACK_BOT.send_message(message.channel, "Did somebody say back?")
+            await message.channel.send(message.channel, "Did somebody say back?")
 
         filename = pick_random_file()
         await play_opus_audio_to_channel_then_leave(message, filename,\

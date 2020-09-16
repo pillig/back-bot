@@ -1,6 +1,6 @@
 FROM python:3.5-alpine
 RUN apk add --no-cache build-base libffi-dev opus ffmpeg
-RUN python3 -m pip install -U discord.py youtube-dl PyNaCl
+RUN python3 -m pip install -U discord.py discord.py[voice] youtube-dl PyNaCl
 ARG TOKEN
 RUN mkdir /usr/local/back_bot
 WORKDIR /user/local/back_bot
